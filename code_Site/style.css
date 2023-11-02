@@ -1,0 +1,97 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+header {
+  background-color: #b4adad; 
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#sensor-data {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom:20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin: 0;
+  color: #ffffff;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 16px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #666;
+}
+
+/* Updated button styling */
+#toggle-button {
+  padding: 15px 25px;
+  font-size: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+#toggle-button:hover {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+#toggle-button:active {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+
+.red {
+  background-color: #ff4c4c;
+  color: white;
+}
+
+.red:hover {
+  background-color: #e74c3c;
+}
+
+.green {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.green:hover {
+  background-color: #2ecc71;
+}
+
+.slider-container {
+  margin: 20px 0;
+}
+
+.slider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  border-radius: 50%;
+}
+
+.slider-label {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+}
