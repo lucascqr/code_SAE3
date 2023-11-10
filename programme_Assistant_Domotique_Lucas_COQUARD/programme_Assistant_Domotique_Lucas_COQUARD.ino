@@ -44,6 +44,8 @@ float temperature ;
 float lux ;
 float photo_res ;
 int frequence_Led = 500 ;
+int rectWidth ;
+int rectHeight ;
 
 
 TFT_eSPI tft = TFT_eSPI(); // Invoke custom library
@@ -75,6 +77,7 @@ void initWebSocket() {
 void setup() {
   //Initialisation du port série à 9600 baud
   Serial.begin(9600);
+  
   Wire.begin();
   SPI.begin();
   rfid.PCD_Init();
@@ -131,15 +134,16 @@ void setup() {
   tft.fillScreen(ILI9341_BLACK);
   tft.setTextColor(ILI9341_WHITE);
   tft.setTextSize(2);
-  pinMode(BOUTON, OUTPUT) ;
-  pinMode(LED, OUTPUT) ;
-  pinMode(MQ9_AOUT, INPUT) ;
-  pinMode(R_PHOTO, INPUT) ;
   Button();
   tft.fillRect(0, 220, tft.width(), 20, TFT_BLACK);  // Effacer la zone température
   tft.setCursor(0, 220);
   tft.print(WiFi.localIP());
 
+  //Configurations des Entrées/Sorties
+  pinMode(BOUTON, OUTPUT) ;
+  pinMode(LED, OUTPUT) ;
+  pinMode(MQ9_AOUT, INPUT) ;
+  pinMode(R_PHOTO, INPUT) ;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
@@ -156,13 +160,10 @@ void loop() {
   if (now - last > 1000) {
     capteurs() ;
     displayData() ;
-    Serial.println();
-    Serial.println((String) "Frequence LED : " + frequence_Led);
-    Serial.println();
     last = now;
   }
 
-  if (now - lastData > 1000) { // Vérifier s'il y a des clients connectés
+  if (now - lastData > 1000) {
     JSONVar data;
     data["temperature"] = temperature;
     data["pression"] = pression;
@@ -197,22 +198,20 @@ void capteurs() {
 
   //MQ9
   float vOut = analogRead(MQ9_AOUT) * (3.3 / 4095.0); // Convertir la lecture ADC en tension
-  gasValue = 595 * pow((3.3 / vOut - 1) * (996 / 850), -2.24) ; //996 = RO ; 850 = Rs ; 3.3 = V_MAX
+  gasValue = 595 * pow((3.3 / vOut - 1) * (996 / 850), -2.24) ; //
   Serial.println((String)"Valeur lue: " + vOut + " V, Concentration: " + gasValue + " ppm");
 
   //Photo résistances
   float value = analogRead(R_PHOTO) * 3.3 / 4095.0 ;
   photo_res = 72 * pow(value, 1.429) ;
+  Serial.println((String)"Luminosité photoressistance " + photo_res " lx");
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 void RFID() {
-  // Initialisé la boucle si aucun badge n'est présent
   if ( !rfid.PICC_IsNewCardPresent())
     return;
-
-  // Vérifier la présence d'un nouveau badge
   if ( !rfid.PICC_ReadCardSerial())
     return;
 
@@ -255,7 +254,10 @@ void bouton_tft() {
   // Vérifier le toucher
   uint16_t x, y;
   if (tft.getTouch(&x, &y)) {
-    if (x > (tft.width() / 2) - 50 && x < (tft.width() / 2) + 50 && y > (tft.height() / 2) - 20 && y < (tft.height() / 2) + 20) {
+    if (x > (tft.width() / 2) - (rectWidth / 2) 
+    && x < (tft.width() / 2) + (rectWidth / 2) 
+    && y > (tft.height() / 2) - (rectHeight / 2) 
+    && y < (tft.height() / 2) + (rectHeight / 2)) {
       Button() ;
     }
   }
@@ -295,8 +297,8 @@ void Button() {
   int textWidth = tft.textWidth(text);
   int textHeight = 16;  // Estimation de la hauteur de texte pour la taille de police 2
   int padding = 10;  // Espace autour du texte
-  int rectWidth = textWidth + 2 * padding;
-  int rectHeight = textHeight + 2 * padding;
+  rectWidth = textWidth + 2 * padding;
+  rectHeight = textHeight + 2 * padding;
   int rectX = (tft.width() / 2) - (rectWidth / 2);
   int rectY = (tft.height() / 2) - (rectHeight / 2);
 
